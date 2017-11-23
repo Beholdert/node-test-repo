@@ -1,0 +1,67 @@
+<html>  
+    <head> 
+        <link rel="stylesheet" href="css/style.css"> 
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
+    </head>
+    <body>
+        <div class="booksFrame">
+            <h1>Available Books</h1>
+            <div class="books">
+                <div class="search">
+                    <input type="text" placeholder="search..."> 
+                    <i class="material-icons" id="addButton" style="font-size: 40px">add_circle</i>
+                </div>
+                <div class="covers">
+                </div>
+            </div>
+        </div>
+         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script>
+            $(function() {
+                $.ajax({
+                    method: 'GET',
+                    url: '/books',
+                    success: function(data) {
+                        console.log(data);
+                        for (var i = 0; i < data.length; i++) {
+                            var newBook = $('<div class="book"></div>');
+                            newBook.append($('<img src ="' + data[i].cover + '" width="190" height="250">'));
+                            newBook.append($('<h4>Title: ' + data[i].title + '</h4>'));
+                            newBook.append($('<h4>Author: ' + data[i].author + '</h4>'));
+                            $('.covers').append(newBook);
+                            console.log(newBook);
+                        }
+                    }
+                });
+
+                $('.search input').on('input', function() {
+                    var input = $(this);
+                    $.ajax({
+                        method: 'GET',
+                        url: '/books',
+                        success: function(data) {
+                            $('.covers').html('');
+                            var searchBooks = data.filter(function(element) {
+                                return element.title.toLowerCase().substring(0, input.val().length) === input.val().toLowerCase()
+                                        || element.author.toLowerCase().substring(0, input.val().length) === input.val().toLowerCase();
+                            });
+
+                            if (searchBooks.length != 0) {
+                                    for (var i = 0; i < searchBooks.length; i++) {
+                                    var newBook = $('<div class="book"></div>');
+                                    newBook.append($('<img src ="' + searchBooks[i].cover + '" width="190" height="250">'));
+                                    newBook.append($('<h4>Title: ' + searchBooks[i].title + '</h4>'));
+                                    newBook.append($('<h4>Author: ' + searchBooks[i].author + '</h4>'));
+                                    $('.covers').append(newBook);
+                                }
+                            } else {
+                                 $('.covers').html('<h1>No books found</h1>');
+                            }
+                        }
+                    });
+                });
+            });
+        </script>
+    </body>
+</html>
