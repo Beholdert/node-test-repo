@@ -4,11 +4,16 @@ const hbs = require('hbs');
 const port = process.env.PORT || 3000; 
 const app = express();
 
+hbs.registerPartials(__dirname + '/views/partials');
+hbs.registerHelper('toUpper', (name) => name.toUpperCase());
+
 app.use('/static', express.static(__dirname + '/public'));
 
-app.use((req, res, next) => {
-    console.log(`${req.url}`);
-    res.end();
+app.get('/about', (req, res) => {
+    res.render('about', {
+        name: name
+    });
 });
 
-app.listen(port, () => console.log(`Server is up on port ${port}`));
+app.listen(port, 
+    () => console.log(`Server is up on port ${port}`));
